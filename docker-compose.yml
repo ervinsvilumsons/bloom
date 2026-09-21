@@ -1,0 +1,36 @@
+services:
+
+  wordpress:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PHP_VERSION: ${PHP_VERSION}
+        WP_VERSION: ${WP_VERSION}
+        WSL_USER: ${WSL_USER}
+        WSL_USER_ID: ${WSL_USER_ID}
+
+    image: wordpress:${WP_VERSION}-php${PHP_VERSION}-apache
+
+    volumes:
+      - ./:/var/www/html
+    
+    command: ["/usr/local/bin/build.sh"]
+
+    environment:
+      WORDPRESS_DB_HOST: ${DB_HOST}
+      WORDPRESS_DB_NAME: ${DB_NAME}
+      WORDPRESS_DB_USER: ${DB_USER}
+      WORDPRESS_DB_PASSWORD: ${DB_PASSWORD}
+      WORDPRESS_SITEURL: ${WP_SITEURL}
+      WSL_USER: ${WSL_USER}
+
+    ports:
+      - "${APACHE_PORT}:80"
+
+    networks:
+      - public-services
+
+networks:
+  public-services:
+    external: true
